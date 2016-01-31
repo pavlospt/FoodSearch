@@ -1,4 +1,4 @@
-# LifeSum-FoodSearch
+#FoodSearch
 
 This repository contains a project created for LifeSum's CodeTest for Android Developer position.
 
