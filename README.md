@@ -1,7 +1,5 @@
 #FoodSearch
 
-This repository contains a project created for LifeSum's CodeTest for Android Developer position.
-
 It makes use of the most popular and hyped pattern in Android these days. Dagger + MVP + RxJava. 
 
 Main Components
@@ -24,11 +22,6 @@ Main Components
 
 [EventBus](https://github.com/greenrobot/EventBus) for Events communication.
 
-Bonus
-=====
-From the bonus part of the CodeTest, I implemented a FoodDetails Screen and Caching of requests. Also user can save foods
-and search them offline.
-Due to limited time, I did not implement animations, multi-add or UnitTesting. 
 
 Credits
 =======
