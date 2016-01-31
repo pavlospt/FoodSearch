@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">LS - FoodSearch</string>
+    <string name="search_food">Search Food...</string>
+    <string name="title">Title</string>
+    <string name="carbohydrates">Carbohydrates</string>
+    <string name="ls_foodsearch">LS - FoodSearch</string>
+    <string name="could_not_save_food">Unfortunately we could not save this food :(</string>
+    <string name="successfully_saved_food">Food was successfully saved :)</string>
+    <string name="food_already_saved">Food is already saved :)</string>
+    <string name="changed_mind">Changed My Mind</string>
+    <string name="delete_action">Delete</string>
+    <string name="deletion_message">Are you sure you want to delete %s from your saved foods?</string>
+    <string name="deletion_error">Unfortunately we could not delete this food from your saved foods :(</string>
+    <string name="saved_foods_title">Saved Foods</string>
+</resources>

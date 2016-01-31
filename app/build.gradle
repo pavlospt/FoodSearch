@@ -1,0 +1,65 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
+
+android {
+    compileSdkVersion 'Google Inc.:Google APIs:23'
+    buildToolsVersion "23.0.2"
+
+    defaultConfig {
+        applicationId "com.lifesum.foodsearch"
+        minSdkVersion 21
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+        multiDexEnabled true
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    apt 'com.google.dagger:dagger-compiler:2.0.1'
+    compile 'com.google.dagger:dagger:2.0.1'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
+    compile 'com.squareup.retrofit2:retrofit:2.0.0-beta3'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0-beta3'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.0-beta3'
+    compile 'com.squareup.okhttp3:okhttp:3.0.0-RC1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.0.0-RC1'
+    compile 'io.reactivex:rxandroid:1.0.1'
+    apt 'com.bluelinelabs:logansquare-compiler:1.3.3'
+    compile 'com.bluelinelabs:logansquare:1.3.3'
+    compile 'com.github.aurae.retrofit:converter-logansquare:1.2.0'
+    compile 'com.jakewharton.timber:timber:4.1.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.jakewharton.rxbinding:rxbinding:0.3.0'
+    compile 'com.android.support:support-annotations:23.1.1'
+    compile 'com.pushtorefresh.storio:sqlite:1.8.0'
+    compile 'com.pushtorefresh.storio:sqlite-annotations:1.8.0'
+    apt 'com.pushtorefresh.storio:sqlite-annotations-processor:1.8.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'com.android.support:multidex:1.0.1'
+    compile 'org.parceler:parceler:1.0.3'
+    apt "org.parceler:parceler:1.0.3"
+    compile 'de.greenrobot:eventbus:3.0.0-beta1'
+    provided 'de.greenrobot:eventbus-annotation-processor:3.0.0-beta1'
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.3@aar') {
+        transitive = true
+    }
+    compile('com.mikepenz:materialdrawer:4.6.4@aar') {
+        transitive = true
+    }
+    compile 'com.squareup.picasso:picasso:2.5.2'
+}
