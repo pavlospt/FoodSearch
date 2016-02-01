@@ -15,17 +15,18 @@ import com.pushtorefresh.storio.sqlite.queries.InsertQuery;
  */
 public class CachedFoodPutResolver extends PutResolver<FoodModel> {
 
+    private static final InsertQuery CACHED_FOODS_INSERT_QUERY = InsertQuery
+            .builder()
+            .table(FoodTable.TABLE_CACHED_FOODS)
+            .build();
+
     @NonNull
     @Override
     public PutResult performPut(@NonNull StorIOSQLite storIOSQLite, @NonNull FoodModel object) {
         storIOSQLite.internal().beginTransaction();
 
         try {
-            storIOSQLite.internal().insert(
-                    InsertQuery
-                            .builder()
-                            .table(FoodTable.TABLE_CACHED_FOODS)
-                            .build(),
+            storIOSQLite.internal().insert(CACHED_FOODS_INSERT_QUERY,
                     object.asContentValues());
             storIOSQLite.internal().setTransactionSuccessful();
         } finally {
