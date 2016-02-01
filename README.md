@@ -4,7 +4,7 @@ It makes use of the most popular and hyped pattern in Android these days. Dagger
 
 Main Components
 ===============
-[StorIO](https://github.com/pushtorefresh/storio) for my ORM Implementation.
+[StorIO](https://github.com/pushtorefresh/storio) for my DAO Implementation.
 
 [Retrofit](https://github.com/square/retrofit) for the network requests.
 
