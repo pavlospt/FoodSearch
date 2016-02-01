@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 
 import com.lifesum.foodsearch.databases.DbOpenHelper;
-import com.lifesum.foodsearch.databases.tables.FoodTable;
 import com.lifesum.foodsearch.models.FoodModel;
 import com.lifesum.foodsearch.models.FoodModelSQLiteTypeMapping;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;

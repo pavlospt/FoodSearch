@@ -1,9 +1,8 @@
 package com.lifesum.foodsearch.presenters;
 
-import com.lifesum.foodsearch.interactors.FoodInteractorImpl;
+import com.lifesum.foodsearch.interactors.interfaces.IFoodInteractor;
 import com.lifesum.foodsearch.models.FoodModel;
 import com.lifesum.foodsearch.presenters.interfaces.ISaveFoodsPresenter;
-import com.lifesum.foodsearch.views.IMainView;
 import com.lifesum.foodsearch.views.ISavedFoodsView;
 
 import java.lang.ref.WeakReference;
@@ -26,11 +25,11 @@ import timber.log.Timber;
 public class SavedFoodsPresenterImpl implements ISaveFoodsPresenter {
 
     private WeakReference<ISavedFoodsView> savedFoodsView;
-    private FoodInteractorImpl foodInteractor;
+    private IFoodInteractor foodInteractor;
     private CompositeSubscription compositeSubscription;
 
     @Inject
-    public SavedFoodsPresenterImpl(FoodInteractorImpl foodInteractor) {
+    public SavedFoodsPresenterImpl(IFoodInteractor foodInteractor) {
         this.foodInteractor = foodInteractor;
     }
 
@@ -42,7 +41,7 @@ public class SavedFoodsPresenterImpl implements ISaveFoodsPresenter {
     @Override
     public void detachView() {
         this.savedFoodsView.clear();
-        if(!this.compositeSubscription.isUnsubscribed())
+        if (!this.compositeSubscription.isUnsubscribed())
             this.compositeSubscription.unsubscribe();
     }
 
@@ -55,31 +54,31 @@ public class SavedFoodsPresenterImpl implements ISaveFoodsPresenter {
         compositeSubscription.add(
                 this.foodInteractor
                         .retrieveSavedFoods()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<FoodModel>>() {
-                    @Override
-                    public void onCompleted() {
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<List<FoodModel>>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e("Error getting saved foods:%s", e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(List<FoodModel> foodModels) {
-                        Timber.e("Loaded all saved foods:%s",foodModels.toString());
-                        if(foodModels != null){
-                            if(doIfView()){
-                                //The received List with object is unmodifiable
-                                //so we can not cast it to an ArrayList. For this case
-                                //we create a temp ArrayList and fill it with the List values.
-                                savedFoodsView.get().presentSavedFoods(prepareListToReturn(foodModels));
                             }
-                        }
-                    }
-                })
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.e("Error getting saved foods:%s", e.getMessage());
+                            }
+
+                            @Override
+                            public void onNext(List<FoodModel> foodModels) {
+                                Timber.e("Loaded all saved foods:%s", foodModels.toString());
+                                if (foodModels != null) {
+                                    if (doIfView()) {
+                                        //The received List with object is unmodifiable
+                                        //so we can not cast it to an ArrayList. For this case
+                                        //we create a temp ArrayList and fill it with the List values.
+                                        savedFoodsView.get().presentSavedFoods(prepareListToReturn(foodModels));
+                                    }
+                                }
+                            }
+                        })
         );
     }
 
@@ -91,29 +90,29 @@ public class SavedFoodsPresenterImpl implements ISaveFoodsPresenter {
         checkCompositeSubscription();
         compositeSubscription.add(
                 this.foodInteractor
-                    .searchSavedFood(term)
-                    .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<List<FoodModel>>() {
-                    @Override
-                    public void onCompleted() {
+                        .searchSavedFood(term)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<List<FoodModel>>() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e("Error searching for saved food:%s", e.getMessage());
-                    }
-
-                    @Override
-                    public void onNext(List<FoodModel> foodModels) {
-                        Timber.e("Saved food search result:%s", foodModels.toString());
-                        if(foodModels != null){
-                            if(doIfView()){
-                                savedFoodsView.get().presentSearchedFoods(prepareListToReturn(foodModels));
                             }
-                        }
-                    }
-                })
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.e("Error searching for saved food:%s", e.getMessage());
+                            }
+
+                            @Override
+                            public void onNext(List<FoodModel> foodModels) {
+                                Timber.e("Saved food search result:%s", foodModels.toString());
+                                if (foodModels != null) {
+                                    if (doIfView()) {
+                                        savedFoodsView.get().presentSearchedFoods(prepareListToReturn(foodModels));
+                                    }
+                                }
+                            }
+                        })
         );
     }
 
@@ -132,10 +131,11 @@ public class SavedFoodsPresenterImpl implements ISaveFoodsPresenter {
             this.compositeSubscription = new CompositeSubscription();
     }
 
-    /** The received List with object is unmodifiable
+    /**
+     * The received List with object is unmodifiable
      * so we can not cast it to an ArrayList. For this case
      * we create a temp ArrayList and fill it with the List values.
-     * */
+     */
     private ArrayList<FoodModel> prepareListToReturn(List<FoodModel> passedFoods) {
         ArrayList<FoodModel> toReturn = new ArrayList<>(passedFoods.size());
         toReturn.addAll(passedFoods);

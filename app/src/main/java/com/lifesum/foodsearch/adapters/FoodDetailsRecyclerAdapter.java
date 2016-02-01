@@ -22,7 +22,7 @@ import butterknife.ButterKnife;
  * Created by PavlosPT13.
  * Adapter presenting some basic stats about the Food we are seeing.
  */
-public class FoodDetailsRecyclerAdapter extends RecyclerView.Adapter<FoodDetailsRecyclerAdapter.FoodDetailsViewHolder>{
+public class FoodDetailsRecyclerAdapter extends RecyclerView.Adapter<FoodDetailsRecyclerAdapter.FoodDetailsViewHolder> {
 
     private Context context;
     private ArrayList<Pair<String, String>> keysAndValues;
@@ -47,20 +47,20 @@ public class FoodDetailsRecyclerAdapter extends RecyclerView.Adapter<FoodDetails
     @Override
     public void onBindViewHolder(FoodDetailsViewHolder holder, int position) {
         Pair<String, String> currentPair = keysAndValues.get(position);
-        if(currentPair.first.equalsIgnoreCase(FoodTable.COLUMN_PCS_TEXT.replaceAll("_", " "))){
+        if (currentPair.first.equalsIgnoreCase(FoodTable.COLUMN_PCS_TEXT.replaceAll("_", " "))) {
             String filteredGramsPerServing;
-            if(TextUtils.isEmpty(currentPair.second)){
+            if (TextUtils.isEmpty(currentPair.second)) {
                 filteredGramsPerServing = String.format("%.2f", 0.0);
-            } else if(TextUtils.isDigitsOnly(currentPair.second)){
+            } else if (TextUtils.isDigitsOnly(currentPair.second)) {
                 filteredGramsPerServing = String.format("%.2f", Double.parseDouble(currentPair.second));
-            }else{
+            } else {
                 filteredGramsPerServing = currentPair.second;
             }
             holder.foodDetail.setText(String.format("%s: %s",
                     currentPair.first,
                     filteredGramsPerServing
             ));
-        }else{
+        } else {
             holder.foodDetail.setText(String.format("%s: %.2f",
                     currentPair.first,
                     Double.parseDouble(

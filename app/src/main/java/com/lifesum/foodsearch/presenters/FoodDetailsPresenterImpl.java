@@ -1,6 +1,6 @@
 package com.lifesum.foodsearch.presenters;
 
-import com.lifesum.foodsearch.interactors.FoodInteractorImpl;
+import com.lifesum.foodsearch.interactors.interfaces.IFoodInteractor;
 import com.lifesum.foodsearch.models.FoodModel;
 import com.lifesum.foodsearch.models.responsemodels.ImageSearchResponseModel;
 import com.lifesum.foodsearch.presenters.interfaces.IFoodDetailsPresenter;
@@ -12,11 +12,8 @@ import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
-import rx.Observable;
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -29,11 +26,11 @@ import timber.log.Timber;
 public class FoodDetailsPresenterImpl implements IFoodDetailsPresenter {
 
     private WeakReference<IFoodDetailsView> foodDetailsView;
-    private FoodInteractorImpl foodInteractor;
+    private IFoodInteractor foodInteractor;
     private CompositeSubscription compositeSubscription;
 
     @Inject
-    public FoodDetailsPresenterImpl(FoodInteractorImpl foodInteractor) {
+    public FoodDetailsPresenterImpl(IFoodInteractor foodInteractor) {
         this.foodInteractor = foodInteractor;
         this.compositeSubscription = new CompositeSubscription();
     }
@@ -47,7 +44,7 @@ public class FoodDetailsPresenterImpl implements IFoodDetailsPresenter {
     @Override
     public void detachView() {
         this.foodDetailsView.clear();
-        if(!this.compositeSubscription.isUnsubscribed())
+        if (!this.compositeSubscription.isUnsubscribed())
             this.compositeSubscription.unsubscribe();
     }
 
@@ -58,28 +55,28 @@ public class FoodDetailsPresenterImpl implements IFoodDetailsPresenter {
     public void loadSelectedFood(String id, String table) {
         checkCompositeSubscription();
         compositeSubscription.add(
-            this.foodInteractor
-                    .loadSelectedFood(id, table)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<FoodModel>() {
-                        @Override
-                        public void onCompleted() {
+                this.foodInteractor
+                        .loadSelectedFood(id, table)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<FoodModel>() {
+                            @Override
+                            public void onCompleted() {
 
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.e("Error on getting selected lesson:%s",e.getMessage());
-                        }
-
-                        @Override
-                        public void onNext(FoodModel foodModel) {
-                            if(foodModel != null){
-                                if(doIfView())
-                                    foodDetailsView.get().presentSelectedFood(foodModel);
                             }
-                        }
-                    })
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.e("Error on getting selected lesson:%s", e.getMessage());
+                            }
+
+                            @Override
+                            public void onNext(FoodModel foodModel) {
+                                if (foodModel != null) {
+                                    if (doIfView())
+                                        foodDetailsView.get().presentSelectedFood(foodModel);
+                                }
+                            }
+                        })
         );
     }
 
@@ -90,31 +87,31 @@ public class FoodDetailsPresenterImpl implements IFoodDetailsPresenter {
     public void saveCurrentFood(final FoodModel initialFoodModel) {
         checkCompositeSubscription();
         compositeSubscription.add(
-            this.foodInteractor
-                    .saveFoodModel(initialFoodModel)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<PutResult>() {
-                        @Override
-                        public void onCompleted() {
-                            Timber.e("Save food completed.");
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.e("Error saving foodModel:%s", e.getMessage());
-                            if(doIfView())
-                                foodDetailsView.get().showSaveError();
-                        }
-
-                        @Override
-                        public void onNext(PutResult putResult) {
-                            Timber.e("Successfully saved food model:%s", putResult.toString());
-                            if(doIfView()){
-                                foodDetailsView.get().showSaveSuccess();
-                                foodDetailsView.get().setFoodIsSaved();
+                this.foodInteractor
+                        .saveFoodModel(initialFoodModel)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<PutResult>() {
+                            @Override
+                            public void onCompleted() {
+                                Timber.e("Save food completed.");
                             }
-                        }
-                    })
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.e("Error saving foodModel:%s", e.getMessage());
+                                if (doIfView())
+                                    foodDetailsView.get().showSaveError();
+                            }
+
+                            @Override
+                            public void onNext(PutResult putResult) {
+                                Timber.e("Successfully saved food model:%s", putResult.toString());
+                                if (doIfView()) {
+                                    foodDetailsView.get().showSaveSuccess();
+                                    foodDetailsView.get().setFoodIsSaved();
+                                }
+                            }
+                        })
         );
     }
 
@@ -126,31 +123,31 @@ public class FoodDetailsPresenterImpl implements IFoodDetailsPresenter {
     public void checkIfFoodIsSaved(String id) {
         checkCompositeSubscription();
         compositeSubscription.add(
-            this.foodInteractor
-                    .checkForSavedFood(id)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<FoodModel>() {
-                        @Override
-                        public void onCompleted() {
+                this.foodInteractor
+                        .checkForSavedFood(id)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<FoodModel>() {
+                            @Override
+                            public void onCompleted() {
 
-                        }
+                            }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.e("Error checking if food is saved already:%s",e.getMessage());
-                        }
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.e("Error checking if food is saved already:%s", e.getMessage());
+                            }
 
-                        @Override
-                        public void onNext(FoodModel foodModel) {
-                            if(doIfView()){
-                                if(foodModel == null){
-                                    foodDetailsView.get().setFoodIsNotSaved();
-                                }else{
-                                    foodDetailsView.get().setFoodIsSaved();
+                            @Override
+                            public void onNext(FoodModel foodModel) {
+                                if (doIfView()) {
+                                    if (foodModel == null) {
+                                        foodDetailsView.get().setFoodIsNotSaved();
+                                    } else {
+                                        foodDetailsView.get().setFoodIsSaved();
+                                    }
                                 }
                             }
-                        }
-                    })
+                        })
         );
     }
 
@@ -161,36 +158,36 @@ public class FoodDetailsPresenterImpl implements IFoodDetailsPresenter {
     public void deleteSavedFood(String id) {
         checkCompositeSubscription();
         compositeSubscription.add(
-            this.foodInteractor
-                    .deleteSavedFood(id)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<DeleteResult>() {
-                        @Override
-                        public void onCompleted() {
+                this.foodInteractor
+                        .deleteSavedFood(id)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<DeleteResult>() {
+                            @Override
+                            public void onCompleted() {
 
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.e("Error deleting saved food:%s", e.getMessage());
-                            if(doIfView()){
-                                foodDetailsView.get().showDeletionError();
                             }
-                        }
 
-                        @Override
-                        public void onNext(DeleteResult deleteResult) {
-                            Timber.e("Deleted saved food:%s", deleteResult.toString());
-                            if(doIfView()){
-                                if(deleteResult.numberOfRowsDeleted() > 0){
-                                    foodDetailsView.get().setFoodIsNotSaved();
-                                }else{
-                                    foodDetailsView.get().setFoodIsSaved();
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.e("Error deleting saved food:%s", e.getMessage());
+                                if (doIfView()) {
                                     foodDetailsView.get().showDeletionError();
                                 }
                             }
-                        }
-                    })
+
+                            @Override
+                            public void onNext(DeleteResult deleteResult) {
+                                Timber.e("Deleted saved food:%s", deleteResult.toString());
+                                if (doIfView()) {
+                                    if (deleteResult.numberOfRowsDeleted() > 0) {
+                                        foodDetailsView.get().setFoodIsNotSaved();
+                                    } else {
+                                        foodDetailsView.get().setFoodIsSaved();
+                                        foodDetailsView.get().showDeletionError();
+                                    }
+                                }
+                            }
+                        })
         );
     }
 
@@ -201,32 +198,32 @@ public class FoodDetailsPresenterImpl implements IFoodDetailsPresenter {
     public void searchForImage(String foodTitle) {
         checkCompositeSubscription();
         compositeSubscription.add(
-            this.foodInteractor.searchGoogleImage(foodTitle)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<ImageSearchResponseModel>() {
-                        @Override
-                        public void onCompleted() {
+                this.foodInteractor.searchGoogleImage(foodTitle)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Subscriber<ImageSearchResponseModel>() {
+                            @Override
+                            public void onCompleted() {
 
-                        }
+                            }
 
-                        @Override
-                        public void onError(Throwable e) {
-                            Timber.e("Error on image search:%s", e.getMessage());
-                        }
+                            @Override
+                            public void onError(Throwable e) {
+                                Timber.e("Error on image search:%s", e.getMessage());
+                            }
 
-                        @Override
-                        public void onNext(ImageSearchResponseModel imageSearchResponseModel) {
-                            Timber.e("Image search responded with:%s", imageSearchResponseModel.toString());
-                            if(doIfView()){
-                                if(imageSearchResponseModel.getImageItems() != null
-                                        && imageSearchResponseModel.getImageItems().size() > 0){
-                                    foodDetailsView.get().showFoodImage(
-                                            imageSearchResponseModel.getImageItems().get(0).getLink()
-                                    );
+                            @Override
+                            public void onNext(ImageSearchResponseModel imageSearchResponseModel) {
+                                Timber.e("Image search responded with:%s", imageSearchResponseModel.toString());
+                                if (doIfView()) {
+                                    if (imageSearchResponseModel.getImageItems() != null
+                                            && imageSearchResponseModel.getImageItems().size() > 0) {
+                                        foodDetailsView.get().showFoodImage(
+                                                imageSearchResponseModel.getImageItems().get(0).getLink()
+                                        );
+                                    }
                                 }
                             }
-                        }
-                    })
+                        })
         );
     }
 
@@ -241,7 +238,7 @@ public class FoodDetailsPresenterImpl implements IFoodDetailsPresenter {
     * Making sure that our CompositeSubscription has not been unsubscribed.
     * */
     private void checkCompositeSubscription() {
-        if(this.compositeSubscription == null || this.compositeSubscription.isUnsubscribed())
+        if (this.compositeSubscription == null || this.compositeSubscription.isUnsubscribed())
             this.compositeSubscription = new CompositeSubscription();
     }
 }

@@ -1,13 +1,16 @@
 package com.lifesum.foodsearch.di.modules;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import com.lifesum.foodsearch.FoodSearchApp;
 import com.lifesum.foodsearch.interactors.FoodInteractorImpl;
+import com.lifesum.foodsearch.interactors.interfaces.IFoodInteractor;
 import com.lifesum.foodsearch.presenters.FoodDetailsPresenterImpl;
 import com.lifesum.foodsearch.presenters.MainPresenterImpl;
 import com.lifesum.foodsearch.presenters.SavedFoodsPresenterImpl;
+import com.lifesum.foodsearch.presenters.interfaces.IFoodDetailsPresenter;
+import com.lifesum.foodsearch.presenters.interfaces.IMainPresenter;
+import com.lifesum.foodsearch.presenters.interfaces.ISaveFoodsPresenter;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
 
 import javax.inject.Named;
@@ -41,9 +44,9 @@ public class FoodSearchAppModule {
     * */
     @Singleton
     @Provides
-    FoodInteractorImpl provideLessonsInteractor(@Named("lifesum") Retrofit retrofit,
-                                                @Named("googleImageSearch") Retrofit retrofitImageSearch,
-                                                StorIOSQLite storIOSQLite) {
+    IFoodInteractor provideLessonsInteractor(@Named("lifesum") Retrofit retrofit,
+                                             @Named("googleImageSearch") Retrofit retrofitImageSearch,
+                                             StorIOSQLite storIOSQLite) {
         return new FoodInteractorImpl(retrofit, retrofitImageSearch, storIOSQLite);
     }
 
@@ -52,7 +55,7 @@ public class FoodSearchAppModule {
     * */
     @Singleton
     @Provides
-    MainPresenterImpl provideMainViewPresenter(FoodInteractorImpl foodInteractor){
+    IMainPresenter provideMainViewPresenter(IFoodInteractor foodInteractor) {
         return new MainPresenterImpl(foodInteractor);
     }
 
@@ -61,7 +64,7 @@ public class FoodSearchAppModule {
     * */
     @Singleton
     @Provides
-    FoodDetailsPresenterImpl provideFoodDetailsPresenter(FoodInteractorImpl foodInteractor){
+    IFoodDetailsPresenter provideFoodDetailsPresenter(IFoodInteractor foodInteractor) {
         return new FoodDetailsPresenterImpl(foodInteractor);
     }
 
@@ -70,7 +73,7 @@ public class FoodSearchAppModule {
     * */
     @Singleton
     @Provides
-    SavedFoodsPresenterImpl provideSavedFoodsPresenter(FoodInteractorImpl foodInteractor){
+    ISaveFoodsPresenter provideSavedFoodsPresenter(IFoodInteractor foodInteractor) {
         return new SavedFoodsPresenterImpl(foodInteractor);
     }
 

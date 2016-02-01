@@ -8,6 +8,7 @@ import com.lifesum.foodsearch.views.ISavedFoodsView;
 public interface ISaveFoodsPresenter extends IPresenter<ISavedFoodsView> {
 
     void loadSavedFoods();
+
     void searchSavedFood(String term);
 
 }

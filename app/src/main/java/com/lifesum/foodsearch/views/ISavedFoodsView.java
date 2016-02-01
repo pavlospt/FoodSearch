@@ -10,5 +10,6 @@ import java.util.ArrayList;
 public interface ISavedFoodsView {
 
     void presentSavedFoods(ArrayList<FoodModel> savedFoods);
+
     void presentSearchedFoods(ArrayList<FoodModel> searchedFoods);
 }

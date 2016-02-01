@@ -1,10 +1,10 @@
 package com.lifesum.foodsearch.activities;
 
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -29,7 +29,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by PavlosPT13.
@@ -64,29 +63,30 @@ public class FoodDetailsActivity extends AppCompatActivity implements IFoodDetai
 
         FoodSearchApp.from(this).getComponent().inject(this);
 
-        this.foodDetailsPresenter.attachView(this);
+        foodDetailsPresenter.attachView(this);
 
-        this.linearLayoutManager = new LinearLayoutManager(this);
-        this.linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        this.foodDetailsRecyclerView.setLayoutManager(this.linearLayoutManager);
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        foodDetailsRecyclerView.setLayoutManager(this.linearLayoutManager);
 
-        this.floatingActionButton.setOnClickListener(this);
+        floatingActionButton.setOnClickListener(this);
 
-        if(getIntent().hasExtra(FoodModel.FOOD_MODEL)){
+        if (getIntent().hasExtra(FoodModel.FOOD_MODEL)) {
             FoodModel tempFoodModel = Parcels.unwrap(getIntent().getParcelableExtra(FoodModel.FOOD_MODEL));
             loadPassedFoodModel(tempFoodModel);
-        }else if(getIntent().hasExtra(FoodModel.FOOD_MODEL_SELECTED_ID)){
+        } else if (getIntent().hasExtra(FoodModel.FOOD_MODEL_SELECTED_ID)) {
             int selectedFoodId = getIntent().getIntExtra(FoodModel.FOOD_MODEL_SELECTED_ID, -1);
-            if(selectedFoodId != -1){
-                this.foodDetailsPresenter.loadSelectedFood(String.valueOf(selectedFoodId), FoodTable.TABLE_SAVED_FOODS);;
+            if (selectedFoodId != -1) {
+                foodDetailsPresenter.loadSelectedFood(String.valueOf(selectedFoodId), FoodTable.TABLE_SAVED_FOODS);
+                ;
             }
         }
 
-        this.deleteDialog = new MaterialDialog.Builder(this)
+        deleteDialog = new MaterialDialog.Builder(this)
                 .autoDismiss(true)
                 .cancelable(false)
                 .title(R.string.delete_action)
-                .content(String.format(getString(R.string.deletion_message), this.loadedFoodModel.getTitle()))
+                .content(String.format(getString(R.string.deletion_message), loadedFoodModel.getTitle()))
                 .negativeText(R.string.changed_mind)
                 .negativeColorRes(R.color.colorAccent)
                 .positiveText(R.string.delete_action)
@@ -104,7 +104,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements IFoodDetai
     * We delete the current food, from our SavedFoods table.
     * */
     private void deleteSavedFood() {
-        this.foodDetailsPresenter.deleteSavedFood(String.valueOf(this.loadedFoodModel.getId()));
+        foodDetailsPresenter.deleteSavedFood(String.valueOf(loadedFoodModel.getId()));
     }
 
     @Override
@@ -115,18 +115,18 @@ public class FoodDetailsActivity extends AppCompatActivity implements IFoodDetai
 
     @Override
     public void onClick(View view) {
-        if(view.getId() == R.id.fab_save_food){
-            if(isSaved){
+        if (view.getId() == R.id.fab_save_food) {
+            if (isSaved) {
                 deleteDialog.show();
             } else {
-                this.foodDetailsPresenter.saveCurrentFood(this.loadedFoodModel);
+                foodDetailsPresenter.saveCurrentFood(loadedFoodModel);
             }
         }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return true;
@@ -146,7 +146,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements IFoodDetai
     @Override
     public void showSaveError() {
         Snackbar
-                .make(findViewById(R.id.rl_root_layout), R.string.could_not_save_food,Snackbar.LENGTH_LONG)
+                .make(findViewById(R.id.rl_root_layout), R.string.could_not_save_food, Snackbar.LENGTH_LONG)
                 .show();
     }
 
@@ -156,7 +156,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements IFoodDetai
     @Override
     public void showSaveSuccess() {
         Snackbar
-                .make(findViewById(R.id.rl_root_layout), R.string.successfully_saved_food,Snackbar.LENGTH_LONG)
+                .make(findViewById(R.id.rl_root_layout), R.string.successfully_saved_food, Snackbar.LENGTH_LONG)
                 .show();
     }
 
@@ -167,7 +167,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements IFoodDetai
     @Override
     public void showFoodAlreadyExists() {
         Snackbar
-                .make(findViewById(R.id.rl_root_layout), R.string.food_already_saved,Snackbar.LENGTH_LONG)
+                .make(findViewById(R.id.rl_root_layout), R.string.food_already_saved, Snackbar.LENGTH_LONG)
                 .show();
     }
 
@@ -177,7 +177,7 @@ public class FoodDetailsActivity extends AppCompatActivity implements IFoodDetai
     @Override
     public void showDeletionError() {
         Snackbar
-                .make(findViewById(R.id.rl_root_layout), R.string.deletion_error,Snackbar.LENGTH_LONG)
+                .make(findViewById(R.id.rl_root_layout), R.string.deletion_error, Snackbar.LENGTH_LONG)
                 .show();
     }
 
@@ -218,14 +218,13 @@ public class FoodDetailsActivity extends AppCompatActivity implements IFoodDetai
     * setting the title and assigning the Toolbar.
     * */
     private void loadPassedFoodModel(FoodModel foodModel) {
-        this.loadedFoodModel = foodModel;
-        this.foodDetailsPresenter.checkIfFoodIsSaved(String.valueOf(foodModel.getId()));
-        this.foodDetailsPresenter.searchForImage(foodModel.getTitle());
-        this.foodDetailsRecyclerAdapter = new FoodDetailsRecyclerAdapter(this, foodModel.asPairs());
-        this.foodDetailsRecyclerView.setAdapter(this.foodDetailsRecyclerAdapter);
-        this.toolbar.setTitle(foodModel.getTitle());
-        this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-        setSupportActionBar(this.toolbar);
+        loadedFoodModel = foodModel;
+        foodDetailsPresenter.checkIfFoodIsSaved(String.valueOf(foodModel.getId()));
+        foodDetailsPresenter.searchForImage(foodModel.getTitle());
+        foodDetailsRecyclerAdapter = new FoodDetailsRecyclerAdapter(this, foodModel.asPairs());
+        foodDetailsRecyclerView.setAdapter(foodDetailsRecyclerAdapter);
+        toolbar.setTitle(foodModel.getTitle());
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

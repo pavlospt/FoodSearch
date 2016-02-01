@@ -3,8 +3,8 @@ package com.lifesum.foodsearch.interactors;
 import com.lifesum.foodsearch.databases.resolvers.CachedFoodPutResolver;
 import com.lifesum.foodsearch.databases.tables.FoodTable;
 import com.lifesum.foodsearch.interactors.interfaces.IFoodInteractor;
-import com.lifesum.foodsearch.models.responsemodels.BaseResponseModel;
 import com.lifesum.foodsearch.models.FoodModel;
+import com.lifesum.foodsearch.models.responsemodels.BaseResponseModel;
 import com.lifesum.foodsearch.models.responsemodels.ImageSearchResponseModel;
 import com.lifesum.foodsearch.network.FoodSearchService;
 import com.pushtorefresh.storio.sqlite.StorIOSQLite;
@@ -49,8 +49,8 @@ public class FoodInteractorImpl implements IFoodInteractor {
     public Observable<BaseResponseModel> searchFood(String language, String country, String food) {
         return retrofit
                 .create(FoodSearchService.class)
-                .searchFood(FoodSearchService.AUTH_TOKEN,language,country,food)
-                .subscribeOn(Schedulers.newThread());
+                .searchFood(FoodSearchService.AUTH_TOKEN, language, country, food)
+                .subscribeOn(Schedulers.io());
     }
 
     /*
@@ -64,9 +64,9 @@ public class FoodInteractorImpl implements IFoodInteractor {
                         FoodSearchService.GOOGLE_API_CX,
                         "medium",
                         "image",
-                        query.replaceAll(" ","%20")
+                        query.replaceAll(" ", "%20")
                 )
-                .subscribeOn(Schedulers.newThread());
+                .subscribeOn(Schedulers.io());
     }
 
     /*
@@ -94,8 +94,8 @@ public class FoodInteractorImpl implements IFoodInteractor {
                 .listOfObjects(FoodModel.class)
                 .withQuery(
                         Query.builder()
-                        .table(FoodTable.TABLE_CACHED_FOODS)
-                        .build()
+                                .table(FoodTable.TABLE_CACHED_FOODS)
+                                .build()
                 )
                 .prepare()
                 .asRxObservable();
@@ -112,7 +112,7 @@ public class FoodInteractorImpl implements IFoodInteractor {
                         DeleteQuery
                                 .builder()
                                 .table(FoodTable.TABLE_CACHED_FOODS)
-                        .build()
+                                .build()
                 )
                 .prepare()
                 .executeAsBlocking();
@@ -146,10 +146,10 @@ public class FoodInteractorImpl implements IFoodInteractor {
                 .object(FoodModel.class)
                 .withQuery(
                         Query.builder()
-                        .table(FoodTable.TABLE_SAVED_FOODS)
-                        .where(FoodTable.COLUMN_REMOTE_ID + " =?")
-                        .whereArgs(id)
-                        .build()
+                                .table(FoodTable.TABLE_SAVED_FOODS)
+                                .where(FoodTable.COLUMN_REMOTE_ID + " =?")
+                                .whereArgs(id)
+                                .build()
                 )
                 .prepare()
                 .asRxObservable();
@@ -167,7 +167,7 @@ public class FoodInteractorImpl implements IFoodInteractor {
                                 .table(FoodTable.TABLE_SAVED_FOODS)
                                 .where(FoodTable.COLUMN_REMOTE_ID + " =?")
                                 .whereArgs(id)
-                        .build()
+                                .build()
                 )
                 .prepare()
                 .asRxObservable();
@@ -183,10 +183,10 @@ public class FoodInteractorImpl implements IFoodInteractor {
                 .listOfObjects(FoodModel.class)
                 .withQuery(
                         Query
-                            .builder()
-                            .table(FoodTable.TABLE_SAVED_FOODS)
-                            .where(FoodTable.COLUMN_TITLE + " like '" + term + "%'")
-                        .build()
+                                .builder()
+                                .table(FoodTable.TABLE_SAVED_FOODS)
+                                .where(FoodTable.COLUMN_TITLE + " like '" + term + "%'")
+                                .build()
                 )
                 .prepare()
                 .asRxObservable();
@@ -206,7 +206,7 @@ public class FoodInteractorImpl implements IFoodInteractor {
                                 .table(table)
                                 .where(FoodTable.COLUMN_REMOTE_ID + " =?")
                                 .whereArgs(id)
-                        .build()
+                                .build()
                 )
                 .prepare()
                 .asRxObservable();

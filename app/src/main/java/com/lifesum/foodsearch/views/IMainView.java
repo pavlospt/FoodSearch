@@ -1,7 +1,7 @@
 package com.lifesum.foodsearch.views;
 
-import com.lifesum.foodsearch.models.responsemodels.BaseResponseModel;
 import com.lifesum.foodsearch.models.FoodModel;
+import com.lifesum.foodsearch.models.responsemodels.BaseResponseModel;
 
 import java.util.ArrayList;
 
@@ -11,6 +11,7 @@ import java.util.ArrayList;
 public interface IMainView {
 
     void presentFoodSearch(BaseResponseModel baseResponseModel);
+
     void presentCachedFoods(ArrayList<FoodModel> cachedFoods);
 
 }

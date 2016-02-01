@@ -16,8 +16,8 @@ import com.jakewharton.rxbinding.widget.TextViewTextChangeEvent;
 import com.lifesum.foodsearch.FoodSearchApp;
 import com.lifesum.foodsearch.R;
 import com.lifesum.foodsearch.adapters.SearchResultsRecyclerAdapter;
-import com.lifesum.foodsearch.models.responsemodels.BaseResponseModel;
 import com.lifesum.foodsearch.models.FoodModel;
+import com.lifesum.foodsearch.models.responsemodels.BaseResponseModel;
 import com.lifesum.foodsearch.presenters.MainPresenterImpl;
 import com.lifesum.foodsearch.utils.EventsProvider;
 import com.lifesum.foodsearch.views.IMainView;
@@ -81,35 +81,34 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
         ButterKnife.bind(this);
 
-        this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
         setSupportActionBar(this.toolbar);
 
         FoodSearchApp.from(this).getComponent().inject(this);
 
-        this.headerView = LayoutInflater.from(this).inflate(R.layout.layout_menu_header, null, false);
-        this.headerImageView = (ImageView) headerView.findViewById(R.id.iv_header_image);
+        headerView = LayoutInflater.from(this).inflate(R.layout.layout_menu_header, null, false);
+        headerImageView = (ImageView) headerView.findViewById(R.id.iv_header_image);
 
-        this.searchedFoods = new ArrayList<>();
-        this.cachedFoods = new ArrayList<>();
+        searchedFoods = new ArrayList<>();
+        cachedFoods = new ArrayList<>();
 
-        this.linearLayoutManager = new LinearLayoutManager(this);
-        this.searchResultsRecyclerAdapter = new SearchResultsRecyclerAdapter(this, searchedFoods);
+        linearLayoutManager = new LinearLayoutManager(this);
+        searchResultsRecyclerAdapter = new SearchResultsRecyclerAdapter(this, searchedFoods);
 
-        this.linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        this.searchResultsRecyclerView.setLayoutManager(linearLayoutManager);
-        this.searchResultsRecyclerView.setAdapter(this.searchResultsRecyclerAdapter);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        searchResultsRecyclerView.setLayoutManager(linearLayoutManager);
+        searchResultsRecyclerView.setAdapter(this.searchResultsRecyclerAdapter);
 
-        this.mainPresenter.attachView(this);
-        this.mainPresenter.loadCachedFoods();
+        mainPresenter.attachView(this);
+        mainPresenter.loadCachedFoods();
 
-        this.menuDrawer = new DrawerBuilder()
+        menuDrawer = new DrawerBuilder()
                 .withToolbar(this.toolbar)
                 .withActivity(this)
                 .withHeader(headerView)
                 .addDrawerItems(
                         new PrimaryDrawerItem()
-                                    .withName(R.string.saved_foods_title)
-                                    .withIcon(R.drawable.ic_check_black_24dp)
+                                .withName(R.string.saved_foods_title)
+                                .withIcon(R.drawable.ic_check_black_24dp)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -144,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     * */
     private void drawItemClicked(int position) {
         Timber.e("Selected position:%s", position);
-        if(position == 1){
+        if (position == 1) {
             startActivity(new Intent(this, SavedFoodsActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP));
         }
     }
@@ -164,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     * If the current text has 0 length, this means the user cleared it, so we present any cached results,
     * that we have previously saved. Also before any new load we make sure to cache the previous results.
     * */
-    private Observer<TextViewTextChangeEvent> searchTextChangeObserver(){
+    private Observer<TextViewTextChangeEvent> searchTextChangeObserver() {
         return new Observer<TextViewTextChangeEvent>() {
             @Override
             public void onCompleted() {
@@ -173,18 +172,18 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
             @Override
             public void onError(Throwable e) {
-                Timber.e("OnError in searchTextObserver:%s",e.getMessage());
+                Timber.e("OnError in searchTextObserver:%s", e.getMessage());
             }
 
             @Override
             public void onNext(TextViewTextChangeEvent textViewTextChangeEvent) {
-                Timber.e("Text received is:%s",textViewTextChangeEvent.text());
+                Timber.e("Text received is:%s", textViewTextChangeEvent.text());
                 String currentText = String.valueOf(textViewTextChangeEvent.text());
-                if(currentText.length() == 0){
+                if (currentText.length() == 0) {
                     Timber.e("Presenting cached foods.");
                     mainPresenter.loadCachedFoods();
-                }else{
-                    Timber.e("Searching for:%s",textViewTextChangeEvent.text());
+                } else {
+                    Timber.e("Searching for:%s", textViewTextChangeEvent.text());
                     cachePreviousFoods();
                     mainPresenter.searchFood(currentText);
                 }
@@ -202,11 +201,11 @@ public class MainActivity extends AppCompatActivity implements IMainView {
         foods.addAll(
                 this.searchResultsRecyclerAdapter.getCurrentFoods()
         );
-        if(foods.size() > 0){
-            if(foods.size() >= 10) {
+        if (foods.size() > 0) {
+            if (foods.size() >= 10) {
                 mainPresenter.cacheFoods(foods);
-            }else{
-                mainPresenter.cacheFoods((ArrayList<FoodModel>) foods.subList(0,11));
+            } else {
+                mainPresenter.cacheFoods((ArrayList<FoodModel>) foods.subList(0, 11));
             }
         }
     }
@@ -216,9 +215,9 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     * */
     @Override
     public void presentFoodSearch(BaseResponseModel baseResponseModel) {
-        this.searchedFoods = baseResponseModel.getFoodModels();
-        this.searchResultsRecyclerAdapter.replaceData(searchedFoods);
-        this.searchResultsRecyclerAdapter.notifyDataSetChanged();
+        searchedFoods = baseResponseModel.getFoodModels();
+        searchResultsRecyclerAdapter.replaceData(searchedFoods);
+        searchResultsRecyclerAdapter.notifyDataSetChanged();
     }
 
     /*
@@ -226,9 +225,9 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     * */
     @Override
     public void presentCachedFoods(ArrayList<FoodModel> cachedFoods) {
-        this.cachedFoods = cachedFoods;
-        this.searchResultsRecyclerAdapter.replaceData(this.cachedFoods);
-        this.searchResultsRecyclerAdapter.notifyDataSetChanged();
+        cachedFoods = cachedFoods;
+        searchResultsRecyclerAdapter.replaceData(this.cachedFoods);
+        searchResultsRecyclerAdapter.notifyDataSetChanged();
     }
 
     /*
@@ -236,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     * We navigate the user to the FoodDetails screen.
     * */
     @Subscribe(threadMode = ThreadMode.MainThread)
-    public void foodSelected(EventsProvider.FoodSelectedEvent event){
+    public void foodSelected(EventsProvider.FoodSelectedEvent event) {
         Intent intent = new Intent(this, FoodDetailsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(FoodModel.FOOD_MODEL, Parcels.wrap(event.getFoodModel()));
@@ -245,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements IMainView {
 
     @Override
     protected void onPause() {
-        if(EventBus.getDefault().isRegistered(this))
+        if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
         super.onPause();
     }
@@ -253,23 +252,23 @@ public class MainActivity extends AppCompatActivity implements IMainView {
     @Override
     protected void onResume() {
         super.onResume();
-        if(!EventBus.getDefault().isRegistered(this))
+        if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
-        this.menuDrawer.setSelection(-1);
+        menuDrawer.setSelection(-1);
     }
 
     @Override
     protected void onDestroy() {
         this.mainPresenter.detachView();
-        if(searchSubscription != null && !searchSubscription.isUnsubscribed())
+        if (searchSubscription != null && !searchSubscription.isUnsubscribed())
             searchSubscription.unsubscribe();
         super.onDestroy();
     }
 
     @Override
     public void onBackPressed() {
-        if(this.menuDrawer.isDrawerOpen())
-            this.menuDrawer.closeDrawer();
+        if (this.menuDrawer.isDrawerOpen())
+            menuDrawer.closeDrawer();
         else
             super.onBackPressed();
     }

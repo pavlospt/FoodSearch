@@ -21,7 +21,6 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by PavlosPT13.
  * Adapter that shows the list of our Foods, either the cached or the searched ones.
- *
  */
 public class SearchResultsRecyclerAdapter extends RecyclerView.Adapter<SearchResultsRecyclerAdapter.SearchViewHolder> {
 
@@ -55,9 +54,9 @@ public class SearchResultsRecyclerAdapter extends RecyclerView.Adapter<SearchRes
                         context.getResources().getString(R.string.carbohydrates)
                 )
         );
-        if(tempFoodModel.isVerified()){
+        if (tempFoodModel.isVerified()) {
             holder.verified.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_verified_black_24dp, context.getTheme()));
-        }else{
+        } else {
             holder.verified.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_verified_grey600_24dp, context.getTheme()));
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -81,7 +80,7 @@ public class SearchResultsRecyclerAdapter extends RecyclerView.Adapter<SearchRes
         return this.foodsList;
     }
 
-    public void replaceData(ArrayList<FoodModel> freshFoods){
+    public void replaceData(ArrayList<FoodModel> freshFoods) {
         this.foodsList.clear();
         this.foodsList.addAll(freshFoods);
     }
@@ -97,7 +96,7 @@ public class SearchResultsRecyclerAdapter extends RecyclerView.Adapter<SearchRes
 
         public SearchViewHolder(View itemView) {
             super(itemView);
-            ButterKnife.bind(this,itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 

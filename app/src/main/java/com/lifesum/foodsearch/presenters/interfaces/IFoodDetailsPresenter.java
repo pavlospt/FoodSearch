@@ -9,9 +9,13 @@ import com.lifesum.foodsearch.views.IFoodDetailsView;
 public interface IFoodDetailsPresenter extends IPresenter<IFoodDetailsView> {
 
     void loadSelectedFood(String id, String table);
+
     void saveCurrentFood(FoodModel foodModel);
+
     void checkIfFoodIsSaved(String id);
+
     void deleteSavedFood(String id);
+
     void searchForImage(String foodTitle);
 
 }

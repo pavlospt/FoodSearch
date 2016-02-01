@@ -23,6 +23,8 @@ import dagger.Component;
 })
 public interface FoodSearchAppComponent {
     void inject(MainActivity mainActivity);
+
     void inject(FoodDetailsActivity foodDetailsActivity);
+
     void inject(SavedFoodsActivity savedFoodsActivity);
 }

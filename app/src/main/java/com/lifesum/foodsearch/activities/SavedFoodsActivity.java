@@ -1,8 +1,8 @@
 package com.lifesum.foodsearch.activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -42,7 +42,7 @@ import timber.log.Timber;
  * Created by PavlosPT13.
  * Screen containing the list of our SavedFoods table contents.
  */
-public class SavedFoodsActivity extends AppCompatActivity implements ISavedFoodsView{
+public class SavedFoodsActivity extends AppCompatActivity implements ISavedFoodsView {
 
     @Bind(R.id.t_toolbar)
     Toolbar toolbar;
@@ -67,24 +67,23 @@ public class SavedFoodsActivity extends AppCompatActivity implements ISavedFoods
         ButterKnife.bind(this);
 
         this.toolbar.setTitle(getResources().getString(R.string.saved_foods_title));
-        this.toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
-        setSupportActionBar(this.toolbar);
+        setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         FoodSearchApp.from(this).getComponent().inject(this);
 
-        this.savedFoodsPresenter.attachView(this);
+        savedFoodsPresenter.attachView(this);
 
-        this.linearLayoutManager = new LinearLayoutManager(this);
-        this.linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        this.savedFoodsRecyclerView.setLayoutManager(linearLayoutManager);
-        this.savedFoods = new ArrayList<>();
-        this.savedFoodsRecyclerAdapter = new SearchResultsRecyclerAdapter(this, this.savedFoods);
-        this.savedFoodsRecyclerView.setAdapter(savedFoodsRecyclerAdapter);
+        linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        savedFoodsRecyclerView.setLayoutManager(linearLayoutManager);
+        savedFoods = new ArrayList<>();
+        savedFoodsRecyclerAdapter = new SearchResultsRecyclerAdapter(this, savedFoods);
+        savedFoodsRecyclerView.setAdapter(savedFoodsRecyclerAdapter);
 
-        this.savedFoodsPresenter.loadSavedFoods();
+        savedFoodsPresenter.loadSavedFoods();
 
-        this.searchSubscription = RxTextView
+        searchSubscription = RxTextView
                 .textChangeEvents(searchTermEditText)
                 .debounce(250, TimeUnit.MILLISECONDS)
                 .distinctUntilChanged()
@@ -106,7 +105,7 @@ public class SavedFoodsActivity extends AppCompatActivity implements ISavedFoods
     * If the current text has 0 length, this means the user cleared it, so we present any cached results,
     * that we have previously saved. Also before any new load we make sure to cache the previous results.
     * */
-    private Observer<TextViewTextChangeEvent> searchTextChangeObserver(){
+    private Observer<TextViewTextChangeEvent> searchTextChangeObserver() {
         return new Observer<TextViewTextChangeEvent>() {
             @Override
             public void onCompleted() {
@@ -115,18 +114,18 @@ public class SavedFoodsActivity extends AppCompatActivity implements ISavedFoods
 
             @Override
             public void onError(Throwable e) {
-                Timber.e("OnError in searchTextObserver:%s",e.getMessage());
+                Timber.e("OnError in searchTextObserver:%s", e.getMessage());
             }
 
             @Override
             public void onNext(TextViewTextChangeEvent textViewTextChangeEvent) {
-                Timber.e("Text received is:%s",textViewTextChangeEvent.text());
+                Timber.e("Text received is:%s", textViewTextChangeEvent.text());
                 String currentText = String.valueOf(textViewTextChangeEvent.text());
-                if(currentText.length() == 0){
+                if (currentText.length() == 0) {
                     Timber.e("Presenting full list of saved foods.");
                     presentFoods(savedFoods);
-                }else{
-                    Timber.e("Searching for:%s",currentText);
+                } else {
+                    Timber.e("Searching for:%s", currentText);
                     savedFoodsPresenter.searchSavedFood(currentText);
                 }
             }
@@ -138,8 +137,8 @@ public class SavedFoodsActivity extends AppCompatActivity implements ISavedFoods
     * Either the full saved foods or the sublist of the searched saved foods.
     * */
     private void presentFoods(ArrayList<FoodModel> foods) {
-        this.savedFoodsRecyclerAdapter.replaceData(foods);
-        this.savedFoodsRecyclerAdapter.notifyDataSetChanged();
+        savedFoodsRecyclerAdapter.replaceData(foods);
+        savedFoodsRecyclerAdapter.notifyDataSetChanged();
     }
 
     /*
@@ -164,7 +163,7 @@ public class SavedFoodsActivity extends AppCompatActivity implements ISavedFoods
     * We navigate the user to the FoodDetails screen.
     * */
     @Subscribe(threadMode = ThreadMode.MainThread)
-    public void foodSelected(EventsProvider.FoodSelectedEvent event){
+    public void foodSelected(EventsProvider.FoodSelectedEvent event) {
         Intent intent = new Intent(this, FoodDetailsActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra(FoodModel.FOOD_MODEL, Parcels.wrap(event.getFoodModel()));
@@ -173,7 +172,7 @@ public class SavedFoodsActivity extends AppCompatActivity implements ISavedFoods
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             finish();
         }
         return true;
@@ -181,7 +180,7 @@ public class SavedFoodsActivity extends AppCompatActivity implements ISavedFoods
 
     @Override
     protected void onPause() {
-        if(EventBus.getDefault().isRegistered(this))
+        if (EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().unregister(this);
         super.onPause();
     }
@@ -189,14 +188,14 @@ public class SavedFoodsActivity extends AppCompatActivity implements ISavedFoods
     @Override
     protected void onResume() {
         super.onResume();
-        if(!EventBus.getDefault().isRegistered(this))
+        if (!EventBus.getDefault().isRegistered(this))
             EventBus.getDefault().register(this);
     }
 
     @Override
     protected void onDestroy() {
         savedFoodsPresenter.detachView();
-        if(searchSubscription != null && !searchSubscription.isUnsubscribed())
+        if (searchSubscription != null && !searchSubscription.isUnsubscribed())
             searchSubscription.unsubscribe();
         super.onDestroy();
     }

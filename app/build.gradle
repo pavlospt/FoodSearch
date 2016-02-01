@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "com.lifesum.foodsearch"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"

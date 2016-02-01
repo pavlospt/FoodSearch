@@ -23,16 +23,24 @@ public class ApiModule {
 
     @Provides
     @Singleton
-    @Named("lifesum")
-    Retrofit providesRetrofit() {
+    OkHttpClient provideOkHttpClient() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-            @Override public void log(String message) {
+            @Override
+            public void log(String message) {
                 Timber.e(message);
             }
         });
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                .addInterceptor(new TimberLoggingInterceptor())
+                .addInterceptor(logging)
                 .build();
+
+        return okHttpClient;
+    }
+
+    @Provides
+    @Singleton
+    @Named("lifesum")
+    Retrofit providesRetrofit(OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(FoodSearchService.ENDPOINT_BASE_URL)
                 .addConverterFactory(LoganSquareConverterFactory.create())
@@ -44,15 +52,7 @@ public class ApiModule {
     @Provides
     @Singleton
     @Named("googleImageSearch")
-    Retrofit providesGoogleImageSearch() {
-        HttpLoggingInterceptor logging = new HttpLoggingInterceptor(new HttpLoggingInterceptor.Logger() {
-            @Override public void log(String message) {
-                Timber.e(message);
-            }
-        });
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-//                .addInterceptor(new TimberLoggingInterceptor())
-                .build();
+    Retrofit providesGoogleImageSearch(OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
                 .baseUrl(FoodSearchService.GOOGLE_IMAGE_SEARCH_ENDPOINT_URL)
                 .addConverterFactory(LoganSquareConverterFactory.create())
