@@ -27,6 +27,6 @@ Credits
 =======
 Author : Pavlos-Petros Tournaris (p.tournaris@gmail.com)
 
-Website: [Personal Site](http://pavlospt.com)
+Website: [http://pavlospt.com](http://pavlospt.com)
 
 ![LS-FoodSearch](/screens/1.png)
